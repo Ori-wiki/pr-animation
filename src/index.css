@@ -4,6 +4,9 @@
   box-sizing: border-box;
   list-style: none;
 }
+body {
+  font-family: 'PT Sans', system-ui, sans-serif;
+}
 
 :root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
