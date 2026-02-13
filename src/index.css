@@ -7,6 +7,11 @@
 
 body {
   font-family: 'PT Sans', system-ui, sans-serif;
+  overflow-x: hidden;
+}
+
+html {
+  overflow-x: hidden;
 }
 
 :root {
@@ -154,6 +159,104 @@ body {
     left: calc(100% + 10px);
     font-size: 14px;
     max-width: 110px;
+  }
+}
+
+.news-slider-shell {
+  position: relative;
+}
+
+.news-slider {
+  display: flex;
+  gap: 48px;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  scrollbar-width: none;
+  cursor: grab;
+  user-select: none;
+  touch-action: pan-y;
+  padding: 0 8px 8px;
+}
+
+.news-slider::-webkit-scrollbar {
+  display: none;
+}
+
+.news-slider.is-dragging {
+  cursor: grabbing;
+}
+
+.news-card {
+  flex: 0 0 400px;
+  min-height: 210px;
+  scroll-snap-align: start;
+}
+
+.news-card-year {
+  font-size: 25px;
+  line-height: 1.2;
+  color: #3877ee;
+  margin: 0 0 16px;
+}
+
+.news-card-text {
+  font-size: 20px;
+  line-height: 1.5;
+  color: #42567a;
+  margin: 0;
+}
+
+.news-slider-arrow {
+  position: absolute;
+  top: 46%;
+  transform: translateY(-50%);
+  border: none;
+  background: #fff;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+}
+
+.news-slider-arrow:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.news-slider-arrow--left {
+  left: -8px;
+}
+
+.news-slider-arrow--right {
+  right: -8px;
+}
+
+@media (max-width: 1250px) {
+  .news-slider {
+    gap: 24px;
+    padding-bottom: 4px;
+  }
+
+  .news-card {
+    flex-basis: min(320px, calc(100vw - 88px));
+    min-height: 170px;
+  }
+
+  .news-card-year {
+    font-size: 20px;
+    margin-bottom: 10px;
+  }
+
+  .news-card-text {
+    font-size: 16px;
+    line-height: 1.4;
+  }
+
+  .news-slider-arrow {
+    top: 44%;
   }
 }
 

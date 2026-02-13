@@ -1,8 +1,13 @@
-﻿import { useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 type CircleItem = {
   id: number;
   label: string;
+};
+
+type NewsItem = {
+  year: string;
+  text: string;
 };
 
 const circleItems: CircleItem[] = [
@@ -14,12 +19,31 @@ const circleItems: CircleItem[] = [
   { id: 6, label: 'Наука' },
 ];
 
+const newsItems: NewsItem[] = [
+  { year: '1981', text: 'Запущена первая версия IBM PC, что ускорило массовое развитие персональных компьютеров.' },
+  { year: '1982', text: 'Получен Нобель по физике за исследования квантовой электроники и лазерных технологий.' },
+  { year: '1983', text: 'ARPANET перешла на TCP/IP, и это стало фундаментом современного интернета.' },
+  { year: '1984', text: 'Выпущен Macintosh с графическим интерфейсом, который изменил пользовательский опыт.' },
+  { year: '1985', text: 'Unix-системы получили новый виток развития в корпоративной инфраструктуре.' },
+  { year: '1986', text: 'Станция Мир выведена на орбиту и стала ключевым этапом долговременной космонавтики.' },
+];
+
 const desktopRadius = 268;
 const mobileRadius = 200;
 const targetAngle = -60;
+const newsDragMultiplier = 1.8;
 
 function App() {
   const [spinIndex, setSpinIndex] = useState(0);
+  const [canNewsPrev, setCanNewsPrev] = useState(false);
+  const [canNewsNext, setCanNewsNext] = useState(true);
+  const newsSliderRef = useRef<HTMLDivElement | null>(null);
+  const newsDragRef = useRef({
+    active: false,
+    pointerId: -1,
+    startX: 0,
+    startScrollLeft: 0,
+  });
   const itemCount = circleItems.length;
   const angleStep = 360 / itemCount;
 
@@ -56,6 +80,84 @@ function App() {
 
   const currentCounter = String(activeIndex + 1).padStart(2, '0');
   const totalCounter = String(itemCount).padStart(2, '0');
+
+  const updateNewsButtons = useCallback(() => {
+    const slider = newsSliderRef.current;
+    if (!slider) return;
+
+    const maxScrollLeft = Math.max(0, slider.scrollWidth - slider.clientWidth);
+    setCanNewsPrev(slider.scrollLeft > 1);
+    setCanNewsNext(slider.scrollLeft < maxScrollLeft - 1);
+  }, []);
+
+  const getNewsStep = useCallback(() => {
+    const slider = newsSliderRef.current;
+    if (!slider) return 0;
+
+    const firstCard = slider.querySelector('[data-news-card]') as HTMLElement | null;
+    if (!firstCard) return slider.clientWidth * 0.8;
+
+    const styles = window.getComputedStyle(slider);
+    const gap = parseFloat(styles.columnGap || styles.gap || '0');
+    return firstCard.offsetWidth + gap;
+  }, []);
+
+  const scrollNews = useCallback(
+    (direction: 1 | -1) => {
+      const slider = newsSliderRef.current;
+      if (!slider) return;
+
+      slider.scrollBy({
+        left: getNewsStep() * direction,
+        behavior: 'smooth',
+      });
+    },
+    [getNewsStep],
+  );
+
+  const handleNewsPointerDown = (event: React.PointerEvent<HTMLDivElement>) => {
+    if (event.pointerType === 'mouse' && event.button !== 0) return;
+    const slider = newsSliderRef.current;
+    if (!slider) return;
+
+    newsDragRef.current = {
+      active: true,
+      pointerId: event.pointerId,
+      startX: event.clientX,
+      startScrollLeft: slider.scrollLeft,
+    };
+
+    slider.classList.add('is-dragging');
+    slider.setPointerCapture(event.pointerId);
+  };
+
+  const handleNewsPointerMove = (event: React.PointerEvent<HTMLDivElement>) => {
+    const slider = newsSliderRef.current;
+    const drag = newsDragRef.current;
+    if (!slider || !drag.active || drag.pointerId !== event.pointerId) return;
+
+    event.preventDefault();
+    const deltaX = event.clientX - drag.startX;
+    slider.scrollLeft = drag.startScrollLeft - deltaX * newsDragMultiplier;
+    updateNewsButtons();
+  };
+
+  const stopNewsDrag = (event: React.PointerEvent<HTMLDivElement>) => {
+    const slider = newsSliderRef.current;
+    const drag = newsDragRef.current;
+    if (!slider || !drag.active || drag.pointerId !== event.pointerId) return;
+
+    drag.active = false;
+    slider.classList.remove('is-dragging');
+    slider.releasePointerCapture(event.pointerId);
+    updateNewsButtons();
+  };
+
+  useEffect(() => {
+    updateNewsButtons();
+    window.addEventListener('resize', updateNewsButtons);
+    return () => window.removeEventListener('resize', updateNewsButtons);
+  }, [updateNewsButtons]);
 
   return (
     <div className='max-w-360 w-full my-0 mx-auto min-h-full flex flex-col relative border-l border-r border-[#e2e5ec]'>
@@ -181,64 +283,57 @@ function App() {
         </div>
       </div>
 
-      <div className='mt-14 mr-0 w-[calc(100%+56px)]'>
-        <div className='flex -ml-13.5 p-20 relative pt-0 pb-0'>
-          <div className='m-auto overflow-hidden p-0 z-1 block'>
-            <div className='w-full h-full z-1 flex box-content'>
-              <div className='w-auto mr-20 block h-full'>
-                <div className='flex flex-col gap-3.75 cursor-move w-100 pb-25 min-h-75'>
-                  <p className='text-[25px] leading-7.5 text-left text-[#3877ee]'>
-                    1981
-                  </p>
-                  <p className='text-[20px] leading-7.5 text-[#42567a]'>
-                    zxc zxc zxc zxc zxc zxc zxc zxc zxc zxc zxc zxc zxc zxc zxc
-                  </p>
-                </div>
-              </div>
-              <div className='w-auto mr-20 block h-full'>
-                <div className='flex flex-col gap-3.75 cursor-move w-100 pb-25 min-h-75'>
-                  <p className='text-[25px] leading-7.5 text-left text-[#3877ee]'>
-                    1981
-                  </p>
-                  <p className='text-[20px] leading-7.5 text-[#42567a]'>
-                    zxc zxc zxc zxc zxc zxc zxc zxc zxc zxc zxc zxc zxc zxc zxc
-                  </p>
-                </div>
-              </div>
-              <div className='w-auto mr-20 block h-full'>
-                <div className='flex flex-col gap-3.75 cursor-move w-100 pb-25 min-h-75'>
-                  <p className='text-[25px] leading-7.5 text-left text-[#3877ee]'>
-                    1981
-                  </p>
-                  <p className='text-[20px] leading-7.5 text-[#42567a]'>
-                    zxc zxc zxc zxc zxc zxc zxc zxc zxc zxc zxc zxc zxc zxc zxc
-                  </p>
-                </div>
-              </div>
-              <div className='w-auto mr-20 block h-full'>
-                <div className='flex flex-col gap-3.75 cursor-move w-100 pb-25 min-h-75'>
-                  <p className='text-[25px] leading-7.5 text-left text-[#3877ee]'>
-                    1981
-                  </p>
-                  <p className='text-[20px] leading-7.5 text-[#42567a]'>
-                    zxc zxc zxc zxc zxc zxc zxc zxc zxc zxc zxc zxc zxc zxc zxc
-                  </p>
-                </div>
-              </div>
-              <div className='w-auto mr-20 block h-full'>
-                <div className='flex flex-col gap-3.75 cursor-move w-100 pb-25 min-h-75'>
-                  <p className='text-[25px] leading-7.5 text-left text-[#3877ee]'>
-                    1981
-                  </p>
-                  <p className='text-[20px] leading-7.5 text-[#42567a]'>
-                    zxc zxc zxc zxc zxc zxc zxc zxc zxc zxc zxc zxc zxc zxc zxc
-                  </p>
-                </div>
-              </div>
-            </div>
-            <button></button>
-            <button></button>
+      <div className='mt-14 relative'>
+        <div className='news-slider-shell px-20 max-[1250px]:px-7'>
+          <button
+            type='button'
+            onClick={() => scrollNews(-1)}
+            disabled={!canNewsPrev}
+            className='news-slider-arrow news-slider-arrow--left'
+            aria-label='Предыдущая новость'
+          >
+            <svg width='50' height='50' viewBox='0 0 50 50' fill='none' xmlns='http://www.w3.org/2000/svg'>
+              <circle cx='25' cy='25' r='24.5' transform='matrix(-1 0 0 1 50 0)' stroke='#42567A' strokeOpacity='0.5' />
+              <path d='M27.4999 18.75L21.2499 25L27.4999 31.25' stroke='#42567A' strokeWidth={2} />
+            </svg>
+          </button>
+
+          <div
+            ref={newsSliderRef}
+            className='news-slider'
+            onScroll={updateNewsButtons}
+            onPointerDown={handleNewsPointerDown}
+            onPointerMove={handleNewsPointerMove}
+            onPointerUp={stopNewsDrag}
+            onPointerCancel={stopNewsDrag}
+          >
+            {newsItems.map((news, index) => (
+              <article key={`${news.year}-${index}`} data-news-card className='news-card'>
+                <p className='news-card-year'>{news.year}</p>
+                <p className='news-card-text'>{news.text}</p>
+              </article>
+            ))}
           </div>
+
+          <button
+            type='button'
+            onClick={() => scrollNews(1)}
+            disabled={!canNewsNext}
+            className='news-slider-arrow news-slider-arrow--right'
+            aria-label='Следующая новость'
+          >
+            <svg
+              width='50'
+              height='50'
+              viewBox='0 0 50 50'
+              fill='none'
+              xmlns='http://www.w3.org/2000/svg'
+              style={{ transform: 'rotateY(180deg)' }}
+            >
+              <circle cx='25' cy='25' r='24.5' transform='matrix(-1 0 0 1 50 0)' stroke='#42567A' strokeOpacity='0.5' />
+              <path d='M27.4999 18.75L21.2499 25L27.4999 31.25' stroke='#42567A' strokeWidth={2} />
+            </svg>
+          </button>
         </div>
       </div>
     </div>
