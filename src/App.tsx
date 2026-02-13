@@ -15,7 +15,7 @@ const circleItems: CircleItem[] = [
 ];
 
 const desktopRadius = 268;
-const mobileRadius = 199;
+const mobileRadius = 200;
 const targetAngle = -60;
 
 function App() {
@@ -45,6 +45,17 @@ function App() {
       return current + delta;
     });
   };
+
+  const handlePrev = () => {
+    setSpinIndex((current) => current - 1);
+  };
+
+  const handleNext = () => {
+    setSpinIndex((current) => current + 1);
+  };
+
+  const currentCounter = String(activeIndex + 1).padStart(2, '0');
+  const totalCounter = String(itemCount).padStart(2, '0');
 
   return (
     <div className='max-w-360 w-full my-0 mx-auto min-h-full flex flex-col relative border-l border-r border-[#e2e5ec]'>
@@ -108,9 +119,14 @@ function App() {
       </div>
 
       <div className='ml-20 max-[1250px]:ml-7'>
-        <div className='text-[#42567a]'>01/06</div>
+        <div className='text-[#42567a]'>{`${currentCounter}/${totalCounter}`}</div>
         <div className='flex gap-5'>
-          <button className='mt-5 border-none cursor-pointer inline-flex justify-center items-center disabled:opacity-50 bg-white'>
+          <button
+            type='button'
+            onClick={handlePrev}
+            className='mt-5 border-none cursor-pointer inline-flex justify-center items-center disabled:opacity-50 bg-white'
+            aria-label='Предыдущий период'
+          >
             <svg
               width='50'
               height='50'
@@ -133,7 +149,12 @@ function App() {
               />
             </svg>
           </button>
-          <button className='mt-5 border-none cursor-pointer inline-flex justify-center items-center disabled:opacity-50 bg-white'>
+          <button
+            type='button'
+            onClick={handleNext}
+            className='mt-5 border-none cursor-pointer inline-flex justify-center items-center disabled:opacity-50 bg-white'
+            aria-label='Следующий период'
+          >
             <svg
               width='50'
               height='50'
