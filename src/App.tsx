@@ -365,7 +365,7 @@ function App() {
       <div className='relative mx-auto -mt-22.5 flex h-134 w-134 items-center justify-center before:pointer-events-none before:absolute before:left-1/2 before:top-1/2 before:z-[-1] before:h-px before:w-screen before:-translate-x-1/2 before:-translate-y-1/2 before:bg-[#e2e5ec] max-[1250px]:mt-25 max-[1250px]:h-100 max-[1250px]:w-100'>
         <div className='border w-full h-full rounded-full border-[#d0d5e0]'></div>
         <div
-          className='absolute left-1/2 top-1/2 z-2 h-0 w-0 transition-transform duration-620 ease-[ease] [--circle-radius:var(--desktop-radius)] transform-[translate(-50%,-50%)_rotate(var(--nav-rotation))] max-[1250px]:[--circle-radius:var(--mobile-radius)]'
+          className='absolute left-1/2 top-1/2 z-2 h-0 w-0 transition-transform duration-920 ease-[cubic-bezier(0.22,1,0.36,1)] [--circle-radius:var(--desktop-radius)] transform-[translate(-50%,-50%)_rotate(var(--nav-rotation))] max-[1250px]:[--circle-radius:var(--mobile-radius)]'
           style={
             {
               '--nav-rotation': `${rotationDeg}deg`,
@@ -382,14 +382,14 @@ function App() {
               <button
                 key={item.id}
                 type='button'
-                className='absolute left-0 top-0 flex h-14 w-14 cursor-pointer items-center justify-center border-0 bg-transparent p-0 leading-none transform-[translate(-50%,-50%)_rotate(var(--item-angle))_translateX(var(--circle-radius))_rotate(calc(-1*var(--item-angle)))] focus-visible:rounded-full focus-visible:outline-2 focus-visible:outline-[#5d5fef] focus-visible:outline-offset-4'
+                className='group absolute left-0 top-0 flex h-14 w-14 cursor-pointer items-center justify-center border-0 bg-transparent p-0 leading-none transform-[translate(-50%,-50%)_rotate(var(--item-angle))_translateX(var(--circle-radius))_rotate(calc(-1*var(--item-angle)))] focus-visible:rounded-full focus-visible:outline-2 focus-visible:outline-[#5d5fef] focus-visible:outline-offset-4'
                 style={{ '--item-angle': `${angle}deg` } as React.CSSProperties}
                 onClick={() => handleCircleSelect(index)}
                 aria-label={`${item.id}. ${item.label}`}
                 aria-pressed={isActive}
               >
                 <span
-                  className={`flex items-center justify-center transition-transform duration-620 ease-[ease] ${
+                  className={`flex items-center justify-center transition-transform duration-920 ease-[cubic-bezier(0.22,1,0.36,1)] ${
                     isActive
                       ? 'relative h-14 w-14 rounded-full border border-[#b8becc] bg-[#f4f5f9] max-[1250px]:h-11 max-[1250px]:w-11'
                       : 'h-3 w-3 max-[1250px]:h-2.5 max-[1250px]:w-2.5'
@@ -406,10 +406,18 @@ function App() {
                       </span>
                     </>
                   ) : (
-                    <span
-                      className='h-1.5 w-1.5 rounded-full bg-[#42567a] max-[1250px]:h-1.25 max-[1250px]:w-1.25'
-                      aria-hidden='true'
-                    ></span>
+                    <span className='relative flex h-3 w-3 shrink-0 items-center justify-center rounded-full transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:h-14 group-hover:w-14 group-hover:border group-hover:border-[#b8becc] group-hover:bg-[#f4f5f9] group-focus-visible:h-14 group-focus-visible:w-14 group-focus-visible:border group-focus-visible:border-[#b8becc] group-focus-visible:bg-[#f4f5f9] max-[1250px]:h-2.5 max-[1250px]:w-2.5 max-[1250px]:group-hover:h-11 max-[1250px]:group-hover:w-11 max-[1250px]:group-focus-visible:h-11 max-[1250px]:group-focus-visible:w-11'>
+                      <span
+                        className='h-1.5 w-1.5 rounded-full bg-[#42567a] transition-opacity duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:opacity-0 group-focus-visible:opacity-0 max-[1250px]:h-1.25 max-[1250px]:w-1.25'
+                        aria-hidden='true'
+                      ></span>
+                      <span className='absolute text-[20px] leading-none text-[#42567a] opacity-0 transition-opacity duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:opacity-100 group-focus-visible:opacity-100 max-[1250px]:text-[16px]'>
+                        {item.id}
+                      </span>
+                      <span className='pointer-events-none absolute left-[calc(100%+16px)] top-1/2 max-w-42.5 -translate-y-1/2 overflow-hidden text-ellipsis whitespace-nowrap text-[20px] leading-none font-bold text-[#42567a] opacity-0 transition-opacity duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:opacity-100 group-focus-visible:opacity-100 max-[1250px]:left-[calc(100%+10px)] max-[1250px]:max-w-27.5 max-[1250px]:text-[14px]'>
+                        {item.label}
+                      </span>
+                    </span>
                   )}
                 </span>
               </button>
