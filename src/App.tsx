@@ -1,6 +1,7 @@
 ﻿import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import { timelineTopics } from './constants';
+import { ArrowIcon } from './ArrowIcon';
 
 const desktopRadius = 268;
 const mobileRadius = 200;
@@ -237,27 +238,7 @@ function App() {
             className='mt-5 border-none cursor-pointer inline-flex justify-center items-center disabled:opacity-50 bg-white'
             aria-label='Предыдущий период'
           >
-            <svg
-              width='50'
-              height='50'
-              viewBox='0 0 50 50'
-              fill='none'
-              xmlns='http://www.w3.org/2000/svg'
-            >
-              <circle
-                cx='25'
-                cy='25'
-                r='24.5'
-                transform='matrix(-1 0 0 1 50 0)'
-                stroke='#42567A'
-                strokeOpacity='0.5'
-              />
-              <path
-                d='M27.4999 18.75L21.2499 25L27.4999 31.25'
-                stroke='#42567A'
-                strokeWidth={2}
-              />
-            </svg>
+            <ArrowIcon />
           </button>
           <button
             type='button'
@@ -265,28 +246,7 @@ function App() {
             className='mt-5 border-none cursor-pointer inline-flex justify-center items-center disabled:opacity-50 bg-white'
             aria-label='Следующий период'
           >
-            <svg
-              width='50'
-              height='50'
-              viewBox='0 0 50 50'
-              fill='none'
-              xmlns='http://www.w3.org/2000/svg'
-              style={{ transform: 'rotateY(180deg)' }}
-            >
-              <circle
-                cx='25'
-                cy='25'
-                r='24.5'
-                transform='matrix(-1 0 0 1 50 0)'
-                stroke='#42567A'
-                strokeOpacity='0.5'
-              />
-              <path
-                d='M27.4999 18.75L21.2499 25L27.4999 31.25'
-                stroke='#42567A'
-                strokeWidth={2}
-              />
-            </svg>
+            <ArrowIcon mirrored />
           </button>
         </div>
       </div>
@@ -300,27 +260,7 @@ function App() {
             className='absolute -left-2 top-[46%] z-2 inline-flex -translate-y-1/2 cursor-pointer items-center justify-center border-none bg-white disabled:cursor-default disabled:opacity-40 max-[1250px]:top-[44%]'
             aria-label='Предыдущая новость'
           >
-            <svg
-              width='50'
-              height='50'
-              viewBox='0 0 50 50'
-              fill='none'
-              xmlns='http://www.w3.org/2000/svg'
-            >
-              <circle
-                cx='25'
-                cy='25'
-                r='24.5'
-                transform='matrix(-1 0 0 1 50 0)'
-                stroke='#42567A'
-                strokeOpacity='0.5'
-              />
-              <path
-                d='M27.4999 18.75L21.2499 25L27.4999 31.25'
-                stroke='#42567A'
-                strokeWidth={2}
-              />
-            </svg>
+            <ArrowIcon />
           </button>
 
           <div
@@ -355,28 +295,7 @@ function App() {
             className='absolute -right-2 top-[46%] z-2 inline-flex -translate-y-1/2 cursor-pointer items-center justify-center border-none bg-white disabled:cursor-default disabled:opacity-40 max-[1250px]:top-[44%]'
             aria-label='Следующая новость'
           >
-            <svg
-              width='50'
-              height='50'
-              viewBox='0 0 50 50'
-              fill='none'
-              xmlns='http://www.w3.org/2000/svg'
-              style={{ transform: 'rotateY(180deg)' }}
-            >
-              <circle
-                cx='25'
-                cy='25'
-                r='24.5'
-                transform='matrix(-1 0 0 1 50 0)'
-                stroke='#42567A'
-                strokeOpacity='0.5'
-              />
-              <path
-                d='M27.4999 18.75L21.2499 25L27.4999 31.25'
-                stroke='#42567A'
-                strokeWidth={2}
-              />
-            </svg>
+            <ArrowIcon mirrored />
           </button>
         </div>
       </div>
